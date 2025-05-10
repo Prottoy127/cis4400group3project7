@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="cis4400group3project7otcmarkettransaction" database="LogicalDesign" id="LogicalDesign-4cb" >
+	<comment><![CDATA[Project 7: Analysis of the OTC Market Transaction
+
+Business Requirements:
+	Perform analysis of OTC market transactions and study the market closely.
+Functional Requirements:
+	Perform Technical Analysis on OTC market transactions.
+		Moving Average Convergence Divergence (MACD)
+		Relative Strength Index
+		Moving Average 50 Day
+		Moving Average 100 Day
+		Yearly Return
+Data Requirements:
+	OTC market data (provided by the professor).
+	Technical analysis tools and algorithms.]]></comment>
+	<schema name="cis4400group3project7otcmarkettransaction" >
+		<table name="dim_date" prior="Entity" >
+			<column name="date_id" type="INT" jt="4" mandatory="y" />
+			<column name="year_number" type="INT" jt="4" />
+			<column name="month_number" type="INT" jt="4" />
+			<column name="quarter_number" type="INT" jt="4" />
+			<column name="day_number" type="INT" jt="4" />
+			<column name="hour_number" type="INT" jt="4" />
+			<column name="isholiday" type="BOOLEAN" jt="-7" />
+			<column name="isweekend" type="BOOLEAN" jt="-7" />
+			<column name="day_name" type="VARCHAR" length="25" jt="12" />
+			<column name="month_name" type="VARCHAR" length="25" jt="12" />
+			<column name="week_of_month" type="INT" jt="4" />
+			<column name="week_of_year" type="INT" jt="4" />
+			<index name="pk_dim_date" unique="PRIMARY_KEY" >
+				<column name="date_id" />
+			</index>
+		</table>
+		<table name="dim_otc_tier" prior="dim_otc" >
+			<column name="otc_tier_id" type="INT" jt="4" mandatory="y" >
+				<comment><![CDATA[OTC Tier identifier Tier ID.
+
+		OTC Tier identifier
+Tier ID				Tier Name
+5					OTCQX International Premier
+1					OTCQX U.S. Premier
+6					OTCQX International
+2					OTCQX U.S.
+10					OTCQB
+20					Pink Current
+21					Pink Limited
+22					Pink No Information
+11					FINRA BB Only
+30					Grey Market
+40					Expert Market]]></comment>
+			</column>
+			<column name="otc_tier" type="VARCHAR" length="100" jt="12" >
+				<comment><![CDATA[OTC Market Tier – tier details outlined in appendix.]]></comment>
+			</column>
+			<index name="pk_dim_otc_tier" unique="PRIMARY_KEY" >
+				<column name="otc_tier_id" />
+			</index>
+		</table>
+		<table name="dim_security" prior="Entity" >
+			<column name="security_id" type="INT" jt="4" mandatory="y" >
+				<comment><![CDATA[OTC Markets Group unique identifier for security.]]></comment>
+			</column>
+			<column name="company_id" type="INT" jt="4" >
+				<comment><![CDATA[OTC Markets Group unique company identifier for security.]]></comment>
+			</column>
+			<column name="trading_symbol" type="CHAR" length="10" jt="1" >
+				<comment><![CDATA[US markets symbol.]]></comment>
+			</column>
+			<column name="cusip_number" type="CHAR" length="9" jt="1" >
+				<comment><![CDATA[S&P Unique Security Identifier. This field will only be
+populated in the ‘cusip’ file. The ‘no cusip’ file will not contain
+the cusip field.]]></comment>
+			</column>
+			<column name="secuirty_name_issue" type="CHAR" length="50" jt="1" >
+				<comment><![CDATA[OTC Markets Group supplied name for security.]]></comment>
+			</column>
+			<column name="security_type" prior="security_tape" type="VARCHAR" length="75" jt="12" >
+				<comment><![CDATA[Security Type (e.g. common, unit, warrant).]]></comment>
+			</column>
+			<column name="security_class" type="CHAR" length="1" jt="1" >
+				<comment><![CDATA[Security Class (e.g. A, B, K).]]></comment>
+			</column>
+			<column name="security_status" type="VARCHAR" length="20" jt="12" >
+				<comment><![CDATA[Security Status – Possible values include:
+Status Value			Status Description
+	Active				Active, freely trading security
+	Suspended			SEC suspension
+	Halted				FINRA halt
+	Internal Halted			Internal OTC Markets halt
+	Revoked				SEC revocation]]></comment>
+			</column>
+			<column name="finra_issuer_identifier" type="INT" jt="4" />
+			<column name="security_description" type="VARCHAR" jt="12" />
+			<column name="company_name" type="VARCHAR" length="100" jt="12" />
+			<column name="country" type="CHAR" length="25" jt="1" />
+			<column name="state" type="CHAR" length="25" jt="1" />
+			<index name="pk_dim_security" unique="PRIMARY_KEY" >
+				<column name="security_id" />
+			</index>
+		</table>
+		<table name="dim_source" prior="Entity" >
+			<column name="source_id" type="INT" jt="4" mandatory="y" />
+			<column name="source_name" type="VARCHAR" length="100" jt="12" />
+			<index name="pk_dim_source" unique="PRIMARY_KEY" >
+				<column name="source_id" />
+			</index>
+		</table>
+		<table name="dim_trading_venue" prior="dim_trading_" >
+			<column name="trading_venue_id" type="INT" jt="4" mandatory="y" />
+			<column name="trading_venue" type="CHAR" length="20" jt="1" >
+				<comment><![CDATA[US trading venue]]></comment>
+			</column>
+			<index name="pk_dim_trading_venue" unique="PRIMARY_KEY" >
+				<column name="trading_venue_id" />
+			</index>
+		</table>
+		<table name="facts" prior="Entity_0" >
+			<column name="facts_id" type="INT" jt="4" mandatory="y" />
+			<column name="closing_last_inside_bid" type="DECIMAL" length="11" decimal="5" jt="3" >
+				<comment><![CDATA[Closing bid for trading day or last day a closing inside bid was
+available. An inside price requires at least 2 priced quotes on
+the respective side of the market. If there is only 1 priced
+quote for a security for a day then an inside price will not be
+recorded. The ‘Best Bid/Ask’ fields will capture this data.]]></comment>
+			</column>
+			<column name="closing_last_inside_ask" type="DECIMAL" length="11" decimal="5" jt="3" >
+				<comment><![CDATA[Closing inside ask for trading day or last day a closing inside
+ask was available. An inside price requires at least 2 priced
+quotes on the respective side of the market. If there is only 1
+priced quote for a security for a day then an inside price will
+not be recorded. The ‘Best Bid/Ask’ fields will capture this
+data.]]></comment>
+			</column>
+			<column name="closing_mid_price" type="DECIMAL" length="11" decimal="5" jt="3" >
+				<comment><![CDATA[Closing Mid-Price for last day where closing inside bid and
+inside ask were present. If both values are not available then
+field will be left blank (null).]]></comment>
+			</column>
+			<column name="price_open" type="DECIMAL" length="11" decimal="5" jt="3" >
+				<comment><![CDATA[Opening trade for security for trading day.]]></comment>
+			</column>
+			<column name="price_high" type="DECIMAL" length="11" decimal="5" jt="3" >
+				<comment><![CDATA[Intraday High for security for trading day.]]></comment>
+			</column>
+			<column name="price_low" type="DECIMAL" length="11" decimal="5" jt="3" >
+				<comment><![CDATA[Intraday Low for security for trading day.]]></comment>
+			</column>
+			<column name="price_last" type="DECIMAL" length="11" decimal="5" jt="3" >
+				<comment><![CDATA[Closing Price (last sale) for security for trading day.]]></comment>
+			</column>
+			<column name="previous_close_price" type="DECIMAL" length="11" decimal="5" jt="3" >
+				<comment><![CDATA[Previous Day’s closing price. If no trades occurred on last
+trading day then price will reflect most recent ‘previous’ close.
+If there are no previous trades then no value (null) will appear.]]></comment>
+			</column>
+			<column name="share_volume" type="BIGINT" jt="-5" >
+				<comment><![CDATA[Total share volume reported for security for trading day.]]></comment>
+			</column>
+			<column name="dollar_volume" type="DECIMAL" length="30" decimal="20" jt="3" >
+				<comment><![CDATA[Total dollar volume reported for security for trading day.]]></comment>
+			</column>
+			<column name="trade_count" type="INT" jt="4" >
+				<comment><![CDATA[Total trade count reported for security for trading day.]]></comment>
+			</column>
+			<column name="otc_link_share_volume" type="BIGINT" jt="-5" >
+				<comment><![CDATA[Total OTC Link (OTC Markets Group’s trade execution
+system) share volume for security for trading day.]]></comment>
+			</column>
+			<column name="otc_link_$_volume" type="DECIMAL" length="30" decimal="20" jt="3" >
+				<comment><![CDATA[Total OTC Link (OTC Markets Group’s trade execution
+system) dollar volume for security for trading day.]]></comment>
+			</column>
+			<column name="otc_link_trade_count" type="INT" jt="4" >
+				<comment><![CDATA[Total OTC Link (OTC Markets Group trade execution
+system)trade count for security for trading day.]]></comment>
+			</column>
+			<column name="reg_sho_status_flag" type="CHAR" length="1" jt="1" >
+				<comment><![CDATA[Notes whether security is on Reg SHO list for current trading
+day. Reg SHO only applies to ‘reporting’ securities.
+
+http://www.otcmarkets.com/marketActivity/reg-sho-otc]]></comment>
+			</column>
+			<column name="rule_3210_status_flag" type="CHAR" length="1" jt="1" >
+				<comment><![CDATA[Notes whether security is on Rule 3210 list for current trading
+day. Rule 3210 applies to all non-reporting OTC securities.
+
+http://www.otcmarkets.com/marketActivity/reg-sho-otc
+
+A security cannot have a Yes value for both Reg SHO and
+Rule 3210 due to the fact that one list is for reporting
+companies and the other is not.]]></comment>
+			</column>
+			<column name="short_interest_shares" type="BIGINT" jt="-5" >
+				<comment><![CDATA[Number of shares sold short for security. This number is as of
+the effective date noted below.]]></comment>
+			</column>
+			<column name="number_of_market_makers" type="INT" jt="4" >
+				<comment><![CDATA[Number of Market Makers for respective security. Number
+includes all Market Makers that were quoting the security
+(priced and unpriced) throughout the trading day. Quotes
+from OTC Bulletin Board will be considered.]]></comment>
+			</column>
+			<column name="bona_filde_continuous_bfc" type="INT" jt="4" >
+				<comment><![CDATA[Number of Market Makers with two-sided priced quotes at the
+close for security. Quotes from OTC Bulletin Board will be
+considered.]]></comment>
+			</column>
+			<column name="closing_best_bid" type="DECIMAL" length="11" decimal="5" jt="3" >
+				<comment><![CDATA[Closing best bid for trading day. The ‘Best Bid/Ask’ field does
+not have a requirement for 2 priced quotes on the respective
+side. If there is only 1 priced quote then the value will appear
+in this field while it will NOT appear in the inside price field.]]></comment>
+			</column>
+			<column name="closing_best_ask" type="DECIMAL" length="11" decimal="5" jt="3" >
+				<comment><![CDATA[Closing best ask for trading day. The ‘Best Bid/Ask’ field does
+not have a requirement for 2 priced quotes on the respective
+side. If there is only 1 priced quote then the value will appear
+in this field while it will NOT appear in the inside price field.]]></comment>
+			</column>
+			<column name="total_shares_outstanding" type="DECIMAL" length="16" decimal="1" jt="3" >
+				<comment><![CDATA[Shares outstanding for respective security.]]></comment>
+			</column>
+			<column name="closing_spread_inside" type="DECIMAL" length="11" decimal="5" jt="3" >
+				<comment><![CDATA[Difference Ask and Bid (Ask - Bid)/Ask]]></comment>
+			</column>
+			<column name="closing_spread_best" type="DECIMAL" length="11" decimal="5" jt="3" />
+			<column name="pivot_point" type="DECIMAL" length="11" decimal="5" jt="3" >
+				<comment><![CDATA[High + LOW + CLOSE / 3]]></comment>
+			</column>
+			<column name="caveat_emptor_flag" type="CHAR" length="1" jt="1" >
+				<comment><![CDATA[Caveat Emptor (Buyer Beware) Flag – definition in appendix.]]></comment>
+			</column>
+			<column name="trading_venue_id" type="INT" jt="4" mandatory="y" />
+			<column name="source_id" type="INT" jt="4" mandatory="y" />
+			<column name="otc_tier_id" type="INT" jt="4" mandatory="y" />
+			<column name="security_id" type="INT" jt="4" mandatory="y" />
+			<column name="date_id" type="INT" jt="4" mandatory="y" />
+			<index name="pk_facts" unique="PRIMARY_KEY" >
+				<column name="facts_id" />
+			</index>
+			<index name="unq_otc_tier_id" unique="UNIQUE_INDEX" >
+				<column name="otc_tier_id" />
+			</index>
+			<index name="unq_date_id" unique="UNIQUE_INDEX" >
+				<column name="date_id" />
+			</index>
+			<index name="unq_security_id" unique="UNIQUE_INDEX" >
+				<column name="security_id" />
+			</index>
+			<index name="unq_source_id" unique="UNIQUE_INDEX" >
+				<column name="source_id" />
+			</index>
+			<index name="unq_trading_venue_id" unique="UNIQUE_INDEX" >
+				<column name="trading_venue_id" />
+			</index>
+			<fk name="fk_facts_dim_trading_venue" to_schema="cis4400group3project7otcmarkettransaction" to_table="dim_trading_venue" type="NonIdentifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="trading_venue_id" pk="trading_venue_id" />
+			</fk>
+			<fk name="fk_facts_dim_source" to_schema="cis4400group3project7otcmarkettransaction" to_table="dim_source" type="NonIdentifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="source_id" pk="source_id" />
+			</fk>
+			<fk name="fk_facts_dim_security" to_schema="cis4400group3project7otcmarkettransaction" to_table="dim_security" type="NonIdentifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="security_id" pk="security_id" />
+			</fk>
+			<fk name="fk_facts_dim_date" to_schema="cis4400group3project7otcmarkettransaction" to_table="dim_date" type="NonIdentifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="date_id" pk="date_id" />
+			</fk>
+			<fk name="fk_facts_dim_otc_tier" to_schema="cis4400group3project7otcmarkettransaction" to_table="dim_otc_tier" type="NonIdentifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="otc_tier_id" pk="otc_tier_id" />
+			</fk>
+		</table>
+	</schema>
+	<layout name="Default Diagram" id="Diagram-159a" show_relation="columns" >
+		<entity schema="cis4400group3project7otcmarkettransaction" name="dim_date" color="C1D8EE" x="703" y="380" />
+		<entity schema="cis4400group3project7otcmarkettransaction" name="dim_otc_tier" color="C1D8EE" x="703" y="190" />
+		<entity schema="cis4400group3project7otcmarkettransaction" name="dim_security" color="C1D8EE" x="95" y="456" />
+		<entity schema="cis4400group3project7otcmarkettransaction" name="dim_source" color="C1D8EE" x="152" y="285" />
+		<entity schema="cis4400group3project7otcmarkettransaction" name="dim_trading_venue" color="C1D8EE" x="57" y="114" />
+		<entity schema="cis4400group3project7otcmarkettransaction" name="facts" color="3986C1" x="380" y="57" />
+	</layout>
+</project>
