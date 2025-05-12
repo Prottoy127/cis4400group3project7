@@ -1,4 +1,5 @@
-use warehouse compute_wh;
+use warehouse compute_wh
+;
 
 with
     sec_cte as (
@@ -23,6 +24,6 @@ with
         from public.otc_securities_raw
     )
 
-select s.*, f.security_description, f.company_name, f.country
+select distinct s.*, f.security_description, f.company_name, f.country
 from sec_cte s
 left join finra_cte f on s.trading_symbol = f.trading_symbol
