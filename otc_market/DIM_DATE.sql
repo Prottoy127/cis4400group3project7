@@ -10,7 +10,7 @@ with recursive
     )
 
 select
-    date_value as date_id,
+    {{date_to_int('date_value')}} as date_id,
     cast(extract(year from date_value) as integer) as year_number,
     cast(extract(quarter from date_value) as integer) as quarter_number,
     cast(extract(month from date_value) as integer) as month_number,
