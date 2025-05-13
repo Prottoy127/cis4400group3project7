@@ -30,7 +30,7 @@ with
         from public.otc_company_info_raw
     )
 
-select distinct s.*, f.security_description, f.company_name, f.country, st.state
+select distinct s.*, coalesce(f.security_description,'N/A'), coalesce(f.company_name,'N/A'), coalesce(f.country,'N/A') as country, coalesce(st.state,'N/A') as state
 from sec_cte s
 left join finra_cte f on s.trading_symbol = f.trading_symbol
 left join state_cte st on s.trading_symbol = st.trading_symbol
