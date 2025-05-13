@@ -1,12 +1,10 @@
-use warehouse compute_wh
-;
-
 {{ config(materialized="table") }}
 
 with
     facts_cte as (
         select
-            secid as security_id,
+            ds.security_id,
+            dv.trading_venue_id as trading_venue_id,
             openprice as price_open,
             lastprice as price_last,
             lowprice as price_low,
@@ -22,10 +20,13 @@ with
             otclinksharevol as otc_link_share_volume,
             otclinkdolvol as otc_link_dollar_volume,
             rule3210flag as rule_3120_status_flag,
+            caveatemptor as caveat_emptor_flag,
             shortintvol as short_interest_shares,
             bfcmmid as bona_fide_continuous,
             sharesoutstanding as total_shares_outstanding
-        from public.otc_data_raw
+        from public.otc_data_raw r
+        inner join {{ ref("DIM_SECURITY") }} ds on r.secid = ds.security_id
+        inner join {{ ref('DIM_TRADING_VENUE') }} as dv on r.venue = dv.trading_venue
     )
 
 select *
