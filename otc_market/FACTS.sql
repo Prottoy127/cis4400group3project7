@@ -7,7 +7,6 @@ with
     facts_cte as (
         select
             secid as security_id,
-            compid as company_id,
             openprice as price_open,
             lastprice as price_last,
             lowprice as price_low,
@@ -31,7 +30,8 @@ with
 
 select *
 from facts_cte
-where price_open   is not null
-  and price_last   is not null
-  and price_low    is not null
-  and price_high   is not null
+where
+    price_open is not null
+    and price_last is not null
+    and price_low is not null
+    and price_high is not null
