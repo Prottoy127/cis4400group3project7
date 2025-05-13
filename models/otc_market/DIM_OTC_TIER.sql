@@ -1,7 +1,10 @@
 {{ config(materialized="table") }}
 
 
-with otc_tier_cte as (select distinct tier from public.otc_company_info_raw)
+with otc_tier_cte as (
+    select 
+        distinct tier,
+        SYMBOL from public.otc_company_info_raw)
 
-select row_number() over (order by tier) as otc_tier_id, tier as otc_tier
+select row_number() over (order by tier) as otc_tier_id, tier as otc_tier, symbol as trading_symbol
 from otc_tier_cte
