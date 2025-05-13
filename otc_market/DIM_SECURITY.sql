@@ -22,8 +22,16 @@ with
             issuername as company_name,
             country as country
         from public.otc_securities_raw
+    ),
+
+    state_cte as (
+        select
+            state as state,
+            symbol as trading_symbol
+        from public.otc_company_info_raw
     )
 
-select distinct s.*, f.security_description, f.company_name, f.country
+select distinct s.*, f.security_description, f.company_name, f.country, st.state
 from sec_cte s
 left join finra_cte f on s.trading_symbol = f.trading_symbol
+left join state_cte st on s.trading_symbol = st.trading_symbol
