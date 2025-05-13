@@ -1,5 +1,4 @@
-use warehouse compute_wh
-;
+{{ config(materialized="table") }}
 
 with
     sec_cte as (

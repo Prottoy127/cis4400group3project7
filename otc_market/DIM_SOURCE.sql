@@ -1,6 +1,3 @@
-use warehouse compute_wh
-;
-
 {{ config(materialized="table") }}
 
 
