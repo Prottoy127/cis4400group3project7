@@ -31,13 +31,13 @@ with
                 to_char(to_timestamp(closingbestbiddate), 'YYYYMMDDHH')
             ) as closing_bid_date_id,
             to_number(
-                to_char(to_timestamp(closinginsideaskpricedate), 'YYYYMMDDHH')
+                to_char(to_timestamp(closinginsideaskpricedate), 'YYYYMMDD')
             ) as closing_inside_best_ask_date_id,
             to_number(
-                to_char(to_timestamp(closinginsidebidpricedate), 'YYYYMMDDHH')
+                to_char(to_timestamp(closinginsidebidpricedate), 'YYYYMMDD')
             ) as closing_inside_bid_price_date_id,
             to_number(
-                to_char(to_timestamp(previousclosedate), 'YYYYMMDDHH')
+                to_char(to_timestamp(previousclosedate), 'YYYYMMDD')
             ) as previous_close_date_id,
         from public.otc_data_raw r
         inner join {{ ref("DIM_SECURITY") }} ds on r.secid = ds.security_id
