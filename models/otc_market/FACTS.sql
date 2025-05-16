@@ -4,7 +4,7 @@ with
     facts_cte as (
         select
             ds.security_id,
-            dv.trading_venue_id as trading_venue_id,
+            dso.source_id,
             openprice as price_open,
             lastprice as price_last,
             lowprice as price_low,
@@ -41,7 +41,7 @@ with
             ) as previous_close_date_id,
         from public.otc_data_raw r
         inner join {{ ref("DIM_SECURITY") }} ds on r.secid = ds.security_id
-        inner join {{ ref("DIM_TRADING_VENUE") }} as dv on r.venue = dv.trading_venue
+        inner join {{ ref("DIM_SOURCE") }} as dso on r.symbol = dso.trading_symbol
     )
 
 select *
