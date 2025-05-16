@@ -25,10 +25,10 @@ with
             bfcmmid as bona_fide_continuous,
             sharesoutstanding as total_shares_outstandin,
             to_number(
-                to_char(to_timestamp(closingbestaskdate), 'YYYYMMDDHH')
+                to_char(to_timestamp(closingbestaskdate), 'YYYYMMDD')
             ) as closing_ask_date_id,
             to_number(
-                to_char(to_timestamp(closingbestbiddate), 'YYYYMMDDHH')
+                to_char(to_timestamp(closingbestbiddate), 'YYYYMMDD')
             ) as closing_bid_date_id,
             to_number(
                 to_char(to_timestamp(closinginsideaskpricedate), 'YYYYMMDD')
