@@ -1,7 +1,9 @@
 {{ config(materialized="table") }}
 
+with
+    source_cte as (
+        select distinct upper(issuername) as source_name from public.otc_securities_raw
+    )
 
-with source_cte as (select distinct issuername from public.otc_securities_raw)
-
-select row_number() over (order by issuername) as source_id, issuername as source_name
+select row_number() over (order by source_name) as source_id, source_name
 from source_cte
