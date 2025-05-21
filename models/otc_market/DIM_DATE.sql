@@ -2,7 +2,7 @@
 
 with recursive
     date_cte as (
-        select cast('2022-01-01' as timestamp) as date_value
+        select cast('2024-01-01' as timestamp) as date_value
         union all
         select date_value + interval '1 day'
         from date_cte
