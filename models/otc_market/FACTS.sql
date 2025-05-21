@@ -4,11 +4,14 @@ with
     facts_cte as (
         select
             ds.security_id,
-            dso.source_id,
+            dsr.source_id,
+            dtv.trading_venue_id,
+            dot.tier_id,
             openprice as price_open,
             lastprice as price_last,
             lowprice as price_low,
             highprice as price_high,
+            price_last - price_open as price_change,
             price_high - price_low as closing_spread,
             closinginsidebidprice as closing_last_inside_bid,
             closinginsideaskprice as closing_last_inside_ask,
@@ -41,13 +44,14 @@ with
             ) as previous_close_date_id,
         from public.otc_data_raw r
         inner join {{ ref("DIM_SECURITY") }} ds on r.secid = ds.security_id
-        inner join {{ ref("DIM_SOURCE") }} as dso on r.symbol = dso.trading_symbol
+        inner join {{ ref("DIM_SOURCE") }} as dsr on r.symbol = dsr.trading_symbol
+        inner join {{ ref("DIM_TRADING_VENUE") }} as dtv on r.venue = dtv.trading_venue
+        inner join {{ ref("DIM_OTC_TIER") }} as dot on r.tierid = dot.tier_id
     )
 
 select *
 from facts_cte
-where
-    price_open is not null
-    and price_last is not null
-    and price_low is not null
-    and price_high is not null
+WHERE price_open  > 0
+  AND price_last  > 0
+  AND price_low   > 0
+  AND price_high  > 0
