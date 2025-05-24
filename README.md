@@ -123,4 +123,10 @@ Data Orchestration: Snowflake is used to automate the data warehouse, dbt is use
 
 ## Interface
 
-The user is able to perform their own analysis using Tableau given our created data warehouse. The user connects to Tableau live to interact with our project. Some examples are seen in the data/Visualizations directory.
+The user is able to perform their own analysis using Tableau given our created data warehouse. The user connects to Tableau live to interact with our project. Some examples are seen in the data/Visualizations directory. 
+Tableau Public link: https://public.tableau.com/app/profile/protoy.saha/viz/OTCMARKET/Dashboard1?publish=yes 
+
+## Conclusion
+
+Throughout this project, there have been many learning opportunities. From learning about new platforms to new technology. We as a group have learned to work together, share our ideas, collaborate together to create a project around datawarehousing analytics. We have learned to create a fully developed datawarehousing platform. We learned that many OTCs have low price tags that make them a alluring to a particular crowd of customers. Additionally, BTC, ETH, and many other cryptocurrencies are popular on the OTC Market. Finally, there are many ways this project can be enhanced. We hope to revisit this project once again.
+
