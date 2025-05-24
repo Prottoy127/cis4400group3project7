@@ -108,7 +108,7 @@ DbSchema was used to create the dimensional model with a visual representation o
 
 ## Technical Architecture
 
-Note that an ELT was used.
+Note that an ELT was used, and why pythonscripts is near empty. Python integration is nonexistant due to how the data was given.
 
 All data sources provided were integrated into a Python script to then be stored into a container in Azure. Each data source began in Azure as blobs untouched. The Python script made the connection to Azure and stored them in a new container as SQL files. Those SQL files were then loaded into Snowflake to start the schema. Snowflake sent the files to dbt to transform the data and ensure it is validated. dbt then sends the new files back to Snowflake to create a proper data warehouse. Tableau is used to visualize and interact with the data warehouse.
 
@@ -123,4 +123,4 @@ Data Orchestration: Snowflake is used to automate the data warehouse, dbt is use
 
 ## Interface
 
-The user is able to perform their own analysis using Tableau given our created data warehouse. The user connects to Tableau live to interact with our project.
+The user is able to perform their own analysis using Tableau given our created data warehouse. The user connects to Tableau live to interact with our project. Some examples are seen in the data/Visualizations directory.
